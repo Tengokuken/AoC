@@ -1,10 +1,12 @@
 def last_box(lines, boxes):
+    print(lines)
     # follow instructions
     for line in lines:
         line = line.strip()
         moves = line.split(" ")
         print(moves)
         # moves[1] is amount, moves[3] is source, moves[5] is destination
+        print(moves)
         for i in range(int(moves[1])):
             elem = boxes[int(moves[3]) - 1].pop()
             boxes[int(moves[5]) - 1].append(elem)
@@ -14,26 +16,28 @@ def last_box(lines, boxes):
     for box in boxes:
         ends += box[-1]
     return ends
-    
-def some_overlap(lines):
-    overlaps = 0
+
+def crate_mover_9001(lines, boxes):
+    # follow instructions
     for line in lines:
         line = line.strip()
-        pair = line.split(',')
-        pair_1_ints = pair[0].split('-')
-        pair_1_ints = [eval(i) for i in pair_1_ints]
-        pair_2_ints = pair[1].split('-')
-        pair_2_ints = [eval(i) for i in pair_2_ints]
-        if (pair_1_ints[1] == pair_2_ints[0] or
-                pair_1_ints[0] <= pair_2_ints[0] <= pair_1_ints[1] or
-                pair_2_ints[0] <= pair_1_ints[0] <= pair_2_ints[1] or
-                pair_1_ints[0] >= pair_2_ints[0] and pair_1_ints[1] <= pair_2_ints[1] or
-                pair_2_ints[0] >= pair_1_ints[0] and pair_2_ints[1] <= pair_1_ints[1]):
-            overlaps += 1
-            print(pair)
-
-        # same thing
-    return overlaps
+        moves = line.split(" ")
+        # print(moves)
+        # moves[1] is amount, moves[3] is source, moves[5] is destination
+        # print(moves)
+        temp = []
+        for i in range(int(moves[1])):
+            elem = boxes[int(moves[3]) - 1].pop()
+            temp.append(elem)
+        for i in range(len(temp)):
+            elem = temp.pop()
+            boxes[int(moves[5]) - 1].append(elem)
+        print(boxes)
+    # Get the box at the end of each stack
+    ends = ""
+    for box in boxes:
+        ends += box[-1]
+    return ends
 
 if __name__ == "__main__":
     file = open('input.txt', 'r')
@@ -60,7 +64,9 @@ if __name__ == "__main__":
         for i in range(1, len(line), 4):
             if(line[i].isalpha()):
                 newboxes[i//4].insert(0, line[i][0])
-    result = last_box(lines[stacks + 2:], newboxes)
-    print(result)
-    # result = some_overlap(lines)
+
+    # Exclusive since the newboxes change
+    # result = last_box(lines[stacks + 1:], newboxes)
     # print(result)
+    result = crate_mover_9001(lines[stacks + 1:], newboxes)
+    print(result)

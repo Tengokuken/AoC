@@ -6,7 +6,7 @@
 [H] [D] [W] [W] [H] [T] [R] [M] [B]
 [T] [G] [T] [R] [B] [P] [B] [G] [G]
 [S] [S] [B] [D] [F] [L] [Z] [N] [L]
- 1   2   3   4   5   6   7   8   9 
+ 1   2   3   4   5   6   7   8   9
 
 move 4 from 2 to 1
 move 1 from 6 to 9
