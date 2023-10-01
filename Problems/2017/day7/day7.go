@@ -9,52 +9,45 @@ import (
 
 type Program struct {
 	name string
-	weight float32
+	weight int32
 	programs []string
+	parent string
 }
+
+func (p Program) String() string {
+	return fmt.Sprintf("Program %v with weight %v and the following programs: %v", p.name, p.weight, p.programs)
+}
+
+// type Node struct {
+// 	self Program
+// 	parent Program
+// }
+
 func main() {
 	// Part 1
-	// 16 banks, 1 bank holds as many blocks. Reallocate by balancing the blocks btwn banks.
-	// Each cycle, find bank with most blocks (ties are the lower num bank) and redist those blocks.
-	// Remove all blocks from selected, then add one to the next index mem bank, until all are gone 16 -> 1
-	// Count how many cycles until there is a configuration that was already seen
+	// Take each line as a node in a tree. Create a Program struct for each of the programs in lines.
+	// Then, it should be as simple as assigning a parent to all but one Program object. 
+	// The one without a parent is the bottom program.
+	// Alternatively, you could use a tree data structure?
 
 	// Create an array containing each line as an element, then traverse to see how to get to the end
-	line, _, err := goutils.ReadNthLine("./input.txt", 0)
+	lines, err := goutils.ReadLines("./test.txt")
 	goutils.CheckErr(err)
+	programs := make([]Program, len(lines))
 	// fmt.Println(lines)
-	lineArr := strings.Split(line, "\t")
-	banks := goutils.ConvArrStrToInt(lineArr)
-	fmt.Println(banks)
-	// config stores the banks as well as when they were seen (for part 2)
-	configs := map[string]int{}
-	count, prev := 0, 0
-	for {
-		elem, ind := goutils.GetMaxElement(banks)
-		banks[ind] = 0
-		//fmt.Println(elem, ind)
-		for i := 0; i < elem; i++ {
-			if ind == len(banks) - 1 {
-				ind = 0
-			} else {
-				ind++
-			}
-			banks[ind]++
+	for i, line := range lines {
+		l := strings.Split(line, " -> ")
+		self := strings.Split(l[0], " ")
+		weight := strings.TrimFunc(self[1], func(r rune) bool {
+			return r == '(' || r == ')'
+		})
+		v, _ := strconv.Atoi(weight)
+		subprograms := make([]string, 0)
+		if len(l) > 1 {
+			a := strings.Split(l[1], ", ")
+			copy(subprograms, a)
 		}
-		// Convert banks to its string representation
-		var bankStr string
-		for _, e := range banks {
-			bankStr += strconv.Itoa(e) + " "
-		}
-		fmt.Println(banks)
-		count++
-		// Check time
-		var exist bool
-		if prev, exist = configs[bankStr]; exist {
-			fmt.Println("this is bad", bankStr, "exists")
-			break
-		}
-		configs[bankStr] = count
+		programs[i] = Program{self[0], int32(v), subprograms, ""}
+		fmt.Println(programs[i])
 	}
-	fmt.Println("part 1", count, "part 2", count-prev)
 }
